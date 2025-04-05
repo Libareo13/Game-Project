@@ -1,0 +1,38 @@
+Hero fff has killed a monster and gained 3 stars.
+Total monsters killed: 18
+Hero sss has killed a monster and gained 3 stars.
+Total monsters killed: 19
+Hero sss has killed a monster and gained 3 stars.
+Total monsters killed: 20
+Hero ggg has killed a monster and gained 3 stars.
+Total monsters killed: 21
+Hero sss has killed a monster and gained 3 stars.
+Total monsters killed: 22
+Hero Hero has killed a monster and gained 3 stars.
+Total monsters killed: 23
+Hero ss has killed a monster and gained 3 stars.
+Total monsters killed: 24
+Hero aaa has killed a monster and gained 3 stars.
+Total monsters killed: 25
+Hero eee has killed a monster and gained 3 stars.
+Total monsters killed: 26
+Hero sss has killed a monster and gained 3 stars.
+Total monsters killed: 27
+Hero sss has killed a monster and gained 3 stars.
+Total monsters killed: 28
+Hero sss has killed a monster and gained 3 stars.
+Total monsters killed: 29
+Hero sss has killed a monster and gained 3 stars.
+Total monsters killed: 30
+Hero eee has killed a monster and gained 3 stars.
+Total monsters killed: 31
+Hero lib has killed a monster and gained 3 stars.
+Total monsters killed: 32
+Hero Hero has killed a monster and gained 3 stars.
+Total monsters killed: 33
+Hero lll has killed a monster and gained 3 stars.
+Total monsters killed: 34
+Hero vvv has killed a monster and gained 3 stars.
+Total monsters killed: 35
+Monster has killed the hero previously
+Total monsters killed: 35
