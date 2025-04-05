@@ -1,0 +1,88 @@
+Updated Feature with Nested Conditional Statements
+Let's say we want to check for two conditions:
+
+Health condition: If the hero's health is greater than 0, the game continues. If the health is 0 or less, the game ends.
+
+Event condition: If the hero’s health is sufficient, a random event can happen (e.g., treasure, NPC, or bandits). If the health is too low, no events should occur.
+
+We will use nested conditionals to ensure we handle both cases and make decisions based on both conditions.
+
+Code with Nested Conditional Statements:
+python
+Copy
+Edit
+import random
+
+class Hero:
+    def __init__(self, health_points):
+        self.health_points = health_points
+
+# List of possible events
+events = ["treasure", "npc", "bandits"]
+
+# Hero's health points
+hero = Hero(health_points=10)
+
+# Use list comprehension to filter events based on the hero's health points
+valid_events = [event for event in events if hero.health_points > 0]
+
+# Nested Conditional: Check health first, then check for random event if health > 0
+if hero.health_points > 0:
+    if valid_events:  # Nested condition: Check if there are valid events
+        random_event = random.choice(valid_events)
+        print(f"    |    Random event: {random_event}")
+    else:
+        print("    |    No valid events available.")
+else:
+    print("    |    Game over. Hero's health is too low.")
+Explanation of Nested Conditionals:
+Outer condition: The first if hero.health_points > 0: checks if the hero's health is greater than 0. If the health is 0 or less, the game ends and prints "Game over."
+
+Inner (nested) condition: Inside the first condition, we check if there are any valid events by using if valid_events:. This ensures that only when health is positive, and valid events exist, will a random event be chosen.
+
+Example of How It Works:
+Hero Health: 10 (Valid)
+
+The outer if checks that health is positive, and then the inner condition ensures there are events to pick from. A random event (e.g., "treasure") is selected.
+
+Hero Health: 0 (Game Over)
+
+The outer if checks that health is 0, and the game ends immediately with the "Game over" message.
+
+Diagram:
+1. Using List Comprehension Loop:
+Step 1: Filter events based on health: [event for event in events if hero.health_points > 0].
+
+Step 2: If health > 0, continue with the inner condition to select a random event.
+
+Step 3: Execute event or display message.
+
+rust
+Copy
+Edit
+| Hero Health: 10
+| List Comprehension: Valid Events -> ['treasure', 'npc', 'bandits']
+| Check conditions:
+    If health > 0 -> Choose random event: treasure
+2. Using Nested Conditional Statement:
+Outer Condition: If hero.health_points > 0:
+
+Inner Condition: If valid events exist (if valid_events:):
+
+Action: Select random event (e.g., treasure).
+
+If no valid events exist, print "No valid events available."
+
+Else: If health <= 0, print "Game Over."
+
+yaml
+Copy
+Edit
+If health > 0: 
+    Nested if: 
+        If valid events -> Choose random event
+    Else: 
+        No valid events available
+Else: 
+    Print "Game Over"
+With this structure, we are now properly using nested conditional statements to control both the health condition and the event logic.
