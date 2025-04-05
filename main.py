@@ -1,4 +1,3 @@
-# main.py
 import random
 from hero import Warrior, Mage, Archer
 from monster import Monster
@@ -12,8 +11,9 @@ print(f"Python Version: {platform.python_version()}")
 small_dice_options = list(range(1, 7))
 big_dice_options = list(range(1, 21))
 weapons = ["Fist", "Knife", "Club", "Gun", "Bomb", "Nuclear Bomb"]
-loot_options = ["Health Potion", "Poison Potion", "Secret Note", "Leather Boots", "Flimsy Gloves"]
+loot_options = ["Health Potion", "Poison Potion", "Secret Note", "Leather Boots", "Flimsy Gloves", "Key"]
 belt = []
+
 monster_powers = {
     "Fire Magic": 2,
     "Freeze Time": 4,
@@ -40,170 +40,181 @@ def select_hero():
 
     while True:
         choice = input("    |    Enter your choice (1-3): ").strip()
+        name = input("    |    Enter your hero's name: ").strip()
+        if not name:
+            name = "Hero"
+
         if choice == "1":
-            return Warrior(input("    |    Enter Warrior's name: "))
+            return Warrior(name)
         elif choice == "2":
-            return Mage(input("    |    Enter Mage's name: "))
+            return Mage(name)
         elif choice == "3":
-            return Archer(input("    |    Enter Archer's name: "))
+            return Archer(name)
         else:
             print("    |    Invalid choice. Please enter 1, 2, or 3.")
+
+def level_up(hero):
+    hero.level += 1
+    print(f"    |    **** {hero.name} has reached level {hero.level}! ****")
+    hero.health_points = min(100, hero.health_points + 10)
+    hero.combat_strength += 1
+    print(f"    |    Stats increased! HP: {hero.health_points}, Strength: {hero.combat_strength}")
+
+def gain_xp(hero, xp):
+    hero.xp += xp
+    print(f"    |    {hero.name} gained {xp} XP. (Total XP: {hero.xp})")
+    xp_needed = 10
+    if hero.xp >= xp_needed:
+        level_up(hero)
+        hero.xp -= xp_needed
 
 def get_hero_powers(hero):
     powers = []
     relics = []
-    powers_by_type = [power["name"] for power in all_powers if power["type"] == hero.type]
-    if hero.xp <= 5:
-        if hero.level >= 1:
-            powers.append(powers_by_type[0])
-        if hero.level >= 3:
-            powers.append(powers_by_type[1])
-        if hero.level >= 5:
-            powers.append(powers_by_type[2])
-    elif hero.xp > 5:
-        if hero.level >= 1:
-            powers.append(powers_by_type[0])
-            relics.append('Health Boost')
-        if hero.level >= 3:
-            powers.append(powers_by_type[1])
-            relics.append('Mana Regeneration')
-        if hero.level >= 5:
-            powers.append(powers_by_type[2])
-            relics.append('Critical Hit Chance')
+    available_powers = [p for p in all_powers if p["type"] == hero.type and p["level"] <= hero.level]
+    powers = [p["name"] for p in available_powers]
+
+    if hero.level >= 2:
+        relics.append('Minor Health Boost Relic')
+    if hero.level >= 4:
+        relics.append('Minor Strength Boost Relic')
+    if hero.level >= 6:
+        relics.append('Experience Gain Relic')
+
     return powers, relics
 
-def level_up(hero):
-    hero.level +=1
-    print(f"{hero.name} has reached level {hero.level}!")
-
-def gain_xp(hero, xp):
-    hero.xp += xp
-    print(f"{hero.name} gained {xp} XP.")
-    if hero.xp >= 10:
-        level_up(hero)
-        hero.xp = 0
-
-last_game_result, monsters_killed_line = functions.load_game()
-
-if monsters_killed_line:
-    try:
-        monsters_killed = int(monsters_killed_line.split(": ")[1])
-        print(f"Total monsters killed: {monsters_killed}")
-    except:
-        print("Error loading monster kills.")
-else:
-    print("No monster kill data found.")
-
+last_game_result, total_monsters_killed = functions.load_game()
 hero = select_hero()
 monster = Monster()
-num_stars = 0
+session_monsters_killed = total_monsters_killed
 
+# Initial combat strength input
 input_invalid = True
 i = 0
+combat_strength_input = 0
+m_combat_strength_input = 0
 
 while input_invalid and i < 5:
     print("    ------------------------------------------------------------------")
-    print("    |", end="    ")
-    combat_strength = input("Enter your combat Strength (1-6): ").strip()
-    print("    |", end="    ")
-    m_combat_strength = input("Enter the monster's combat Strength (1-6): ").strip()
+    print("    |    Roll virtual dice for starting combat strength boost!")
+    combat_strength_str = input("    |    Enter your roll (1-6): ").strip()
+    m_combat_strength_str = input("    |    Enter the monster's roll (1-6): ").strip()
 
-    if (not combat_strength.isdigit()) or (not m_combat_strength.isdigit()):
-        print("    |    One or more invalid inputs. Player needs to enter integer numbers for Combat Strength    |")
+    if not (combat_strength_str.isdigit() and m_combat_strength_str.isdigit()):
+        print("    |    Invalid input. Please enter numbers between 1 and 6. |")
         i += 1
         continue
 
-    combat_strength = int(combat_strength)
-    m_combat_strength = int(m_combat_strength)
+    combat_strength_input = int(combat_strength_str)
+    m_combat_strength_input = int(m_combat_strength_str)
 
-    if combat_strength not in range(1, 7) or m_combat_strength not in range(1, 7):
-        print("    |    Enter a valid integer between 1 and 6 only")
+    if combat_strength_input not in range(1, 7) or m_combat_strength_input not in range(1, 7):
+        print("    |    Roll must be between 1 and 6.")
         i += 1
         continue
 
     input_invalid = False
 
-input("Rolling the dice for your weapon... (Press enter)")
+# Apply combat strength bonuses
+hero.combat_strength += combat_strength_input
+monster.combat_strength += m_combat_strength_input
+monster.combat_strength = min(12, max(1, monster.combat_strength))
+
+# Weapon roll
+input("    |    Rolling the dice for your weapon... (Press enter)")
 weapon_roll = random.choice(small_dice_options)
-combat_strength = min(6, (int(combat_strength) + weapon_roll))
-print("    |    The hero\'s weapon is " + str(weapons[weapon_roll - 1]))
+weapon_bonus = weapon_roll
+print(f"    |    You rolled a {weapon_roll}. Your weapon is: {weapons[weapon_roll - 1]}")
+print(f"    |    Adding weapon bonus (+{weapon_bonus}) to combat strength.")
+hero.combat_strength += weapon_bonus
 
-hero.combat_strength, monster.combat_strength = functions.adjust_combat_strength(hero.combat_strength, monster.combat_strength)
+# Adjust strength based on previous game result
+hero.combat_strength, monster.combat_strength = functions.adjust_combat_strength(
+    hero.combat_strength, monster.combat_strength, last_game_result
+)
 
-print(f"Hero health points: {hero.health_points}")
-print(f"Monster health points: {monster.health_points}")
+# Display current status
+print(f"    |    Hero: {hero.name} ({hero.type}) | HP: {hero.health_points} | Strength: {hero.combat_strength}")
+print(f"    |    Monster | HP: {monster.health_points} | Strength: {monster.combat_strength}")
 
-for _ in range(2):
-    input("Roll for loot (Press enter)")
-    loot_options, belt = functions.collect_loot(loot_options, belt)
-belt.sort()
-print("Your belt contains:", belt)
-
-belt, hero.health_points = functions.use_loot(belt, hero.health_points)
-
-input("Roll for Monster's Magic Power (Press enter)")
-power_roll = random.choice(list(monster_powers.keys()))
-monster.combat_strength = min(6, monster.combat_strength + monster_powers[power_roll])
-print(f"Monster's combat strength is now {monster.combat_strength} using {power_roll}")
-
-# Treasure Hunt Feature Initialization
-grid_size = 5
-map_grid, treasures = functions.generate_treasure_map(grid_size)
-hero_location = (2, 2)
-map_grid[hero_location[0]][hero_location[1]] = "Hero"
-inventory = {"Keys": 1, "Treasures Collected": 0, "Health": hero.health_points, "Energy": 50}
-
-# Treasure Hunt Gameplay Loop
-print("    |    Treasure Hunt Begins!")
-for row in map_grid:
-    print("    |    ",row)
-
-while True:
-    direction = input("    |    Enter direction (North, South, East, West, exit): ").strip().capitalize()
-    if direction == "Exit":
+# Loot collection
+for i in range(2):
+    input(f"    |    Searching for loot (Attempt {i+1}/2)... (Press enter)")
+    if loot_options:
+        loot_options, belt = functions.collect_loot(loot_options, belt)
+    else:
+        print("    |    No more loot items available.")
         break
-    hero_location = functions.move_hero(hero_location, direction, grid_size)
-    map_grid[hero_location[0]][hero_location[1]] = "Hero"
-    inventory, map_grid = functions.interact_with_treasure(hero_location, map_grid, inventory)
-    inventory["Health"] = hero.health_points
-    hero.health_points = inventory["Health"]
-    for row in map_grid:
-        print("    |    ",row)
-    print(f"    |    Inventory: {inventory}")
+belt.sort()
+print("    |    Your belt contains:", belt if belt else "Nothing")
 
-print("    |    Treasure Hunt Over.")
+# Use loot
+if belt:
+    input("    |    Monster approaching! Quickly use an item? (Press enter)")
+    belt, hero.health_points = functions.use_loot(belt, hero.health_points)
 
+# Monster power roll
+input("    |    Roll for Monster's Magic Power (Press enter)")
+power_roll = random.choice(list(monster_powers.keys()))
+power_bonus = monster_powers[power_roll]
+print(f"    |    Monster gains power: {power_roll} (+{power_bonus} strength)")
+monster.combat_strength += power_bonus
+monster.combat_strength = min(18, max(1, monster.combat_strength))
+print(f"    |    Monster's combat strength is now {monster.combat_strength}")
+
+# Final Monster Fight
 print("    ------------------------------------------------------------------")
-print("You meet the monster. FIGHT!! FIGHT !!")
-while monster.health_points > 0 and hero.health_points > 0:
-    input("Roll to see who strikes first (Press Enter)")
-    attack_roll = random.choice(small_dice_options)
-    match attack_roll % 2:
-        case 0:
-            input("The Monster strikes (Press enter)")
-            hero.health_points = functions.monster_attacks(monster.combat_strength, hero.health_points)
-        case _:
-            input("You strike (Press enter)")
-            monster.health_points = functions.hero_attacks(hero.combat_strength, monster.health_points)
+print("    |    The final confrontation! You meet the monster!")
+print("    |    FIGHT!! FIGHT !!")
 
+while monster.health_points > 0 and hero.health_points > 0:
+    print("    |    --- Combat Round ---")
+    print(f"    |    Hero HP: {hero.health_points} | Monster HP: {monster.health_points}")
+    input("    |    Roll to see who strikes first (Press Enter)")
+    attack_roll = random.choice(small_dice_options)
+
+    hero_strikes_first = (attack_roll % 2 != 0)
+
+    if hero_strikes_first:
+        print("    |    You act first!")
+        input("    |    Attack the monster! (Press enter)")
+        monster.health_points = functions.hero_attacks(hero.combat_strength, monster.health_points)
+        if monster.health_points <= 0: break
+        input("    |    The Monster strikes back! (Press enter)")
+        hero.health_points = functions.monster_attacks(monster.combat_strength, hero.health_points)
+    else:
+        print("    |    The Monster acts first!")
+        input("    |    The Monster attacks! (Press enter)")
+        hero.health_points = functions.monster_attacks(monster.combat_strength, hero.health_points)
+        if hero.health_points <= 0: break
+        input("    |    Retaliate! Attack the monster! (Press enter)")
+        monster.health_points = functions.hero_attacks(hero.combat_strength, monster.health_points)
+
+print("    |    --- Combat Over ---")
 winner = "Hero" if monster.health_points <= 0 else "Monster"
 
-def get_hero_name():
-    for _ in range(5):
-        hero_name = input("Enter your Hero's name (in two words): ").strip()
-        name_p = hero_name.split()
-        if len(name_p) == 2 and all(part.isalpha() for part in name_p):
-            s_name = name_p[0][:2] + name_p[1][0]
-            print(f"I'm going to call you {s_name} for short.")
-            return s_name
-        else:
-            print("Invalid name. Please enter two words (letters only).")
-    return "Hero"
+if winner == "Hero":
+    print(f"    |    **** VICTORY! {hero.name} defeated the Monster! ****")
+    session_monsters_killed += 1
+    gain_xp(hero, 10)
+    num_stars = 3
+else:
+    print(f"    |    ==== DEFEAT! {hero.name} was defeated by the Monster! ====")
+    num_stars = 1
 
-short_name = get_hero_name()
-functions.save_game(winner, hero_name=short_name, num_stars=3 if winner == "Hero" else 1)
-gain_xp(hero, 5)
-gain_xp(hero, 5)
+functions.save_game(winner, hero_name=hero.name, num_stars=num_stars, total_kills=session_monsters_killed)
+print(f"    |    Game saved. Total monsters killed: {session_monsters_killed}")
+
 powers, relics = get_hero_powers(hero)
-print(f"{hero.name}'s powers: {powers}")
-print(f"{hero.name}'s relics: {relics}")
+print(f"    |    --- Final Hero Status ---")
+print(f"    |    Name: {hero.name}")
+print(f"    |    Class: {hero.type}")
+print(f"    |    Level: {hero.level}")
+print(f"    |    XP: {hero.xp}")
+print(f"    |    Health: {hero.health_points}")
+print(f"    |    Strength: {hero.combat_strength}")
+print(f"    |    Powers: {powers if powers else 'None'}")
+print(f"    |    Relics: {relics if relics else 'None'}")
+print(f"    |    Belt: {belt if belt else 'Empty'}")
+print("    ------------------------------------------------------------------")
+print("    |    Game Over.")

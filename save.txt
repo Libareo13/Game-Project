@@ -40,3 +40,17 @@ Hero ggg has killed a monster and gained 3 stars.
 Total monsters killed: 36
 Monster has killed the hero previously
 Total monsters killed: 36
+<<<<<<< HEAD
+=======
+Hero sss has killed a monster and gained 3 stars.
+Total monsters killed: 37
+Hero a has killed a monster and gained 3 stars.
+Total monsters killed: 38
+Hero Libo has killed a monster and gained 3 stars.
+Total monsters killed: 39
+Hero sss has killed a monster and gained 3 stars.
+Total monsters killed: 40
+Hero Libo has killed a monster and gained 3 stars.
+Total monsters killed: 42
+--------------------
+>>>>>>> random-encounters
