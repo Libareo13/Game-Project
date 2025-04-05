@@ -1,3 +1,4 @@
+# functions.py
 import random
 import os
 
@@ -16,7 +17,6 @@ def use_loot(belt, health_points):
     else:
         print("    |    You used " + first_item + " but it's not helpful")
     return belt, health_points
-
 
 def collect_loot(loot_options, belt):
     print("    |    !!You find a loot bag!! You look inside to find 2 items:")
@@ -84,14 +84,17 @@ def load_game():
             lines = file.readlines()
             if lines:
                 last_line = lines[-2].strip()
-                for line in lines:
-                    if "Total monsters killed:" in line:
-                        monster_kills = int(line.split(":")[1].strip())
+                monster_kills_line = lines[-1].strip()
+                if "Total monsters killed:" in monster_kills_line:
+                    monster_kills = int(monster_kills_line.split(":")[1].strip())
                 print(last_line)
                 print(f"Total monsters killed: {monster_kills}")
                 return last_line, monster_kills
     except FileNotFoundError:
         print("No  games found. Starting again from the start.")
+        return None, 0
+    except Exception as e:
+        print(f"An error occurred: {e}")
         return None, 0
 
 def adjust_combat_strength(combat_strength, m_combat_strength):
@@ -108,3 +111,47 @@ def adjust_combat_strength(combat_strength, m_combat_strength):
         else:
             print("    |    ... Based on your previous game, neither the hero nor the monster's combat strength will be increased")
     return combat_strength, m_combat_strength
+
+def generate_treasure_map(grid_size=5, num_treasures=3):
+    map_grid = [["Empty" for _ in range(grid_size)] for _ in range(grid_size)]
+    treasures = [(random.randint(0, grid_size - 1), random.randint(0, grid_size - 1)) for _ in range(num_treasures)]
+    for treasure in treasures:
+        map_grid[treasure[0]][treasure[1]] = "Treasure"
+    return map_grid, treasures
+
+def move_hero(hero_location, direction, grid_size):
+    row, col = hero_location
+    if direction == "North" and row > 0:
+        return (row - 1, col)
+    elif direction == "South" and row < grid_size - 1:
+        return (row + 1, col)
+    elif direction == "East" and col < grid_size - 1:
+        return (row, col + 1)
+    elif direction == "West" and col > 0:
+        return (row, col - 1)
+    else:
+        return hero_location
+
+def interact_with_treasure(hero_location, map_grid, inventory):
+    tile = map_grid[hero_location[0]][hero_location[1]]
+    if tile == "Treasure":
+        print("    |    You found a treasure!")
+        if inventory["Keys"] > 0:
+            print("    |    You used a key to collect the treasure!")
+            inventory["Keys"] -= 1
+            inventory["Treasures Collected"] += 1
+            map_grid[hero_location[0]][hero_location[1]] = "Empty"
+        else:
+            if inventory["Health"] > 50 and inventory["Energy"] > 20:
+                print("    |    You used strong effort to collect the treasure!")
+                inventory["Health"] -= 10
+                inventory["Energy"] -= 10
+                inventory["Treasures Collected"] += 1
+                map_grid[hero_location[0]][hero_location[1]] = "Empty"
+            elif inventory["Energy"] <= 20:
+                print("    |    Not enough energy to collect the treasure.")
+            else:
+                print("    |    Not enough health to collect the treasure.")
+    elif tile == "Empty":
+        print("    |    Nothing interesting here.")
+    return inventory, map_grid

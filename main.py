@@ -146,6 +146,33 @@ power_roll = random.choice(list(monster_powers.keys()))
 monster.combat_strength = min(6, monster.combat_strength + monster_powers[power_roll])
 print(f"Monster's combat strength is now {monster.combat_strength} using {power_roll}")
 
+# Treasure Hunt Feature Initialization
+grid_size = 5
+map_grid, treasures = functions.generate_treasure_map(grid_size)
+hero_location = (2, 2)
+map_grid[hero_location[0]][hero_location[1]] = "Hero"
+inventory = {"Keys": 1, "Treasures Collected": 0, "Health": hero.health_points, "Energy": 50}
+
+# Treasure Hunt Gameplay Loop
+print("    |    Treasure Hunt Begins!")
+for row in map_grid:
+    print("    |    ",row)
+
+while True:
+    direction = input("    |    Enter direction (North, South, East, West, exit): ").strip().capitalize()
+    if direction == "Exit":
+        break
+    hero_location = functions.move_hero(hero_location, direction, grid_size)
+    map_grid[hero_location[0]][hero_location[1]] = "Hero"
+    inventory, map_grid = functions.interact_with_treasure(hero_location, map_grid, inventory)
+    inventory["Health"] = hero.health_points
+    hero.health_points = inventory["Health"]
+    for row in map_grid:
+        print("    |    ",row)
+    print(f"    |    Inventory: {inventory}")
+
+print("    |    Treasure Hunt Over.")
+
 print("    ------------------------------------------------------------------")
 print("You meet the monster. FIGHT!! FIGHT !!")
 while monster.health_points > 0 and hero.health_points > 0:

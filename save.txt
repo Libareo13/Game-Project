@@ -36,3 +36,7 @@ Hero vvv has killed a monster and gained 3 stars.
 Total monsters killed: 35
 Monster has killed the hero previously
 Total monsters killed: 35
+Hero ggg has killed a monster and gained 3 stars.
+Total monsters killed: 36
+Monster has killed the hero previously
+Total monsters killed: 36

@@ -1,6 +1,6 @@
+# monster.py
 from character import Character
 import random
-
 
 class Monster(Character):
     def __init__(self):
