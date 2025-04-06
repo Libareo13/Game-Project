@@ -38,6 +38,9 @@ def collect_loot(loot_options, belt):
     print("    |    Your belt:", belt)
     return loot_options, belt
 
+
+
+
 # --- Attack Functions ---
 def hero_attacks(combat_strength, m_health_points):
     print(f"    |    Player's weapon ({combat_strength}) ---> Monster ({m_health_points})")

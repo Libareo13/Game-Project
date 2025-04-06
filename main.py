@@ -10,9 +10,66 @@ print(f"Python Version: {platform.python_version()}")
 
 small_dice_options = list(range(1, 7))
 big_dice_options = list(range(1, 21))
-weapons = ["Fist", "Knife", "Club", "Gun", "Bomb", "Nuclear Bomb"]
-loot_options = ["Health Potion", "Poison Potion", "Secret Note", "Leather Boots", "Flimsy Gloves", "Key"]
+# Weapons list
+weapons = ["Fist", "Knife", "Club", "Gun", "Bomb", "Nuclear Bomb", "Bat", "Machete", "Sword", "Bow", "Axe"]
+# Loot options
+loot_options = ["Health Potion", "Poison Potion", "Secret Note", "Leather Boots", "Flimsy Gloves", "Golden Coin"]
 belt = []
+#armor options
+armor = ["Helmet", "Chestplate", "Shield"]
+
+
+# Filtering by Good and Bad
+good_loot = [item for item in loot_options if item == "Health Potion"]
+bad_loot = [item for item in loot_options if item == "Poison Potion"]
+good_weapons = [item for item in weapons if (item in ["Fist", "Knife", "Sword", "Axe"]) and item != "Nuclear Bomb"]
+bad_weapons = [item for item in weapons if item == "Bomb" or item == "Nuclear Bomb"]
+good_armor = [item for item in armor if (item == "Helmet" or item == "Chestplate") and item != "Shield"]
+bad_armor = [item for item in armor if item == "Shield"]
+
+# Filtering by Usefulness
+useful_loot = [item for item in loot_options if item in ["Health Potion", "Leather Boots", "Flimsy Gloves"]]
+not_useful_loot = [item for item in loot_options if item == "Secret Note"]
+useful_weapons = [item for item in weapons if (item in ["Fist", "Knife", "Sword", "Axe"]) and item != "Gun"]
+not_useful_weapons = [item for item in weapons if item == "Bomb" or item == "Nuclear Bomb"]
+useful_armor = [item for item in armor if item in ["Helmet", "Chestplate"]]
+not_useful_armor = [item for item in armor if item == "Shield"]
+
+# Filtering by Rarity
+rare_loot = [item for item in loot_options if item == "Golden Coin"]
+common_loot = [item for item in loot_options if item not in rare_loot]
+rare_weapons = [item for item in weapons if item in ["Sword", "Axe"]]
+common_weapons = [item for item in weapons if item not in rare_weapons]
+rare_armor = [item for item in armor if item == "Chestplate"]
+common_armor = [item for item in armor if item not in rare_armor]
+
+# Displaying the filtered results
+print("Welcome to your Inventory Filter")
+print("\nFiltered by Effect:")
+print("Good Loot:", good_loot)
+print("Bad Loot:", bad_loot)
+print("Good Weapons:", good_weapons)
+print("Bad Weapons:", bad_weapons)
+print("Good Armor:", good_armor)
+print("Bad Armor:", bad_armor)
+
+print("\nFiltered by Usefulness:")
+print("Useful Loot:", useful_loot)
+print("Not Useful Loot:", not_useful_loot)
+print("Useful Weapons:", useful_weapons)
+print("Not Useful Weapons:", not_useful_weapons)
+print("Useful Armor:", useful_armor)
+print("Not Useful Armor:", not_useful_armor)
+
+print("\nFiltered by Rarity:")
+print("Rare Loot:", rare_loot)
+print("Common Loot:", common_loot)
+print("Rare Weapons:", rare_weapons)
+print("Common Weapons:", common_weapons)
+print("Rare Armor:", rare_armor)
+print("Common Armor:", common_armor)
+
+
 
 monster_powers = {
     "Fire Magic": 2,
